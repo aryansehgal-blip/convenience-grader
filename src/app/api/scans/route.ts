@@ -61,8 +61,8 @@ export async function POST(request: NextRequest) {
           address: placeDetails.formatted_address,
           lat: placeDetails.geometry.location.lat.toString(),
           lng: placeDetails.geometry.location.lng.toString(),
-          phone: placeDetails.formatted_phone_number,
-          website: placeDetails.website,
+          phone: placeDetails.formatted_phone_number || null,
+          website: placeDetails.website || null,
           types: placeDetails.types,
           updatedAt: new Date(),
         })
@@ -76,8 +76,8 @@ export async function POST(request: NextRequest) {
           address: placeDetails.formatted_address,
           lat: placeDetails.geometry.location.lat.toString(),
           lng: placeDetails.geometry.location.lng.toString(),
-          phone: placeDetails.formatted_phone_number,
-          website: placeDetails.website,
+          phone: placeDetails.formatted_phone_number || null,
+          website: placeDetails.website || null,
           types: placeDetails.types,
         })
         .returning();

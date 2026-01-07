@@ -69,11 +69,34 @@ export async function searchPlaces(query: string): Promise<NominatimPlace[]> {
   }
 }
 
-export async function getPlaceDetails(placeId: string, lat: string, lon: string) {
+export interface PlaceDetails {
+  place_id: string;
+  name: string;
+  formatted_address: string;
+  geometry: {
+    location: {
+      lat: number;
+      lng: number;
+    };
+  };
+  types: string[];
+  address?: any;
+  rating?: number;
+  user_ratings_total?: number;
+  opening_hours?: {
+    weekday_text: string[];
+  };
+  photos?: any[];
+  reviews?: any[];
+  formatted_phone_number?: string;
+  website?: string;
+}
+
+export async function getPlaceDetails(placeId: string, lat: string, lon: string): Promise<PlaceDetails | null> {
   const cacheKey = `nominatim:details:${placeId}`;
 
   // Check cache
-  const cached = await cache.get(cacheKey);
+  const cached = await cache.get<PlaceDetails>(cacheKey);
   if (cached) {
     return cached;
   }
@@ -93,7 +116,7 @@ export async function getPlaceDetails(placeId: string, lat: string, lon: string)
       },
     });
 
-    const details = {
+    const details: PlaceDetails = {
       place_id: placeId,
       name: response.data.display_name.split(',')[0],
       formatted_address: response.data.display_name,
