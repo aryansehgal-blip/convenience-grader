@@ -1,10 +1,23 @@
 import Redis from 'ioredis';
 
 const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
-  maxRetriesPerRequest: 3,
+  maxRetriesPerRequest: 10,
+  enableReadyCheck: false,
+  enableOfflineQueue: true,
+  connectTimeout: 10000,
   retryStrategy(times) {
-    const delay = Math.min(times * 50, 2000);
+    if (times > 10) {
+      return null; // Stop retrying after 10 attempts
+    }
+    const delay = Math.min(times * 100, 3000);
     return delay;
+  },
+  reconnectOnError(err) {
+    const targetError = 'READONLY';
+    if (err.message.includes(targetError)) {
+      return true;
+    }
+    return false;
   },
 });
 
