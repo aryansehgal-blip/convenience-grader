@@ -25,10 +25,14 @@ export interface NominatimPlace {
 export async function searchPlaces(query: string): Promise<NominatimPlace[]> {
   const cacheKey = `nominatim:search:${hashString(query)}`;
 
-  // Check cache
-  const cached = await cache.get<NominatimPlace[]>(cacheKey);
-  if (cached) {
-    return cached;
+  // Check cache (with error handling)
+  try {
+    const cached = await cache.get<NominatimPlace[]>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+  } catch (cacheError) {
+    console.warn('Redis cache read error, continuing without cache:', cacheError);
   }
 
   try {
@@ -59,8 +63,12 @@ export async function searchPlaces(query: string): Promise<NominatimPlace[]> {
         address: p.address,
       }));
 
-    // Cache for 24 hours
-    await cache.set(cacheKey, places, 86400);
+    // Try to cache for 24 hours (but don't fail if Redis is down)
+    try {
+      await cache.set(cacheKey, places, 86400);
+    } catch (cacheError) {
+      console.warn('Redis cache write error, continuing without cache:', cacheError);
+    }
 
     return places;
   } catch (error) {
@@ -95,10 +103,14 @@ export interface PlaceDetails {
 export async function getPlaceDetails(placeId: string, lat: string, lon: string): Promise<PlaceDetails | null> {
   const cacheKey = `nominatim:details:${placeId}`;
 
-  // Check cache
-  const cached = await cache.get<PlaceDetails>(cacheKey);
-  if (cached) {
-    return cached;
+  // Check cache (with error handling)
+  try {
+    const cached = await cache.get<PlaceDetails>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+  } catch (cacheError) {
+    console.warn('Redis cache read error, continuing without cache:', cacheError);
   }
 
   try {
@@ -146,8 +158,12 @@ export async function getPlaceDetails(placeId: string, lat: string, lon: string)
       reviews: [],
     };
 
-    // Cache for 24 hours
-    await cache.set(cacheKey, details, 86400);
+    // Try to cache for 24 hours (but don't fail if Redis is down)
+    try {
+      await cache.set(cacheKey, details, 86400);
+    } catch (cacheError) {
+      console.warn('Redis cache write error, continuing without cache:', cacheError);
+    }
 
     return details;
   } catch (error) {
