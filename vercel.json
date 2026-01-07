@@ -1,0 +1,15 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "POSTGRES_URL": "@postgres_url",
+    "REDIS_URL": "@redis_url",
+    "GOOGLE_PLACES_API_KEY": "@google_places_api_key",
+    "GOOGLE_PAGESPEED_API_KEY": "@google_pagespeed_api_key",
+    "SENDGRID_API_KEY": "@sendgrid_api_key",
+    "FROM_EMAIL": "@from_email"
+  }
+}
