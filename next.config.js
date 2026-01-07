@@ -2,9 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: false,
-  compiler: {
-    emotion: false,
-  },
+  // Force Babel instead of SWC
   experimental: {
     forceSwcTransforms: false,
   },
