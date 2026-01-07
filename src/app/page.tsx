@@ -214,7 +214,7 @@ export default function HomePage() {
               {
                 step: '3',
                 title: 'Get your grade & action plan',
-                description: 'See what's broken, how to fix it, and revenue impact',
+                description: 'See what is broken, how to fix it, and revenue impact',
               },
             ].map((item) => (
               <div key={item.step} className="text-center">
