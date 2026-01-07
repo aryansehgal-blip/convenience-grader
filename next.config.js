@@ -2,6 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: false,
+  compiler: {
+    emotion: false,
+  },
+  experimental: {
+    forceSwcTransforms: false,
+  },
   images: {
     domains: ['maps.googleapis.com', 'lh3.googleusercontent.com'],
   },
