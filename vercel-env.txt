@@ -1,0 +1,9 @@
+POSTGRES_URL=postgresql://postgres:SupabasePass@12@db.bkjgoqujvrtqddenigmr.supabase.co:5432/postgres
+REDIS_URL=redis://default:AXjCAAIncDI1NTA0OTk1OTU0MWM0ZjhiOTU3ZDRiZWE0YWI5ZTg2OXAyMzA5MTQ@cheerful-hen-30914.upstash.io:6379
+GOOGLE_PLACES_API_KEY=FREE_OSM
+GOOGLE_PAGESPEED_API_KEY=FREE_OSM
+SENDGRID_API_KEY=SKIP
+FROM_EMAIL=noreply@conveniencegrader.com
+NEXT_PUBLIC_APP_URL=https://convenience-grader.vercel.app
+NODE_ENV=production
+RATE_LIMIT_SCANS_PER_HOUR=5

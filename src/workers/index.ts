@@ -3,7 +3,7 @@ import { scanQueue, JobType, publishProgress, ScanJobData } from '@/lib/queue';
 import redis from '@/lib/redis';
 import { db, scanJobs, reports, scans } from '@/db';
 import { eq, and } from 'drizzle-orm';
-import { getPlaceDetails } from '@/services/google-places.service';
+import { getPlaceDetails } from '@/services/nominatim.service';
 import { analyzeSearchVisibility } from '@/services/search-visibility.service';
 import { analyzeWebsiteExperience } from '@/services/website-experience.service';
 import { analyzeLocalListings } from '@/services/local-listings.service';
