@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, businesses, scans, scanJobs } from '@/db';
 import { eq } from 'drizzle-orm';
-import { getPlaceDetails } from '@/services/google-places.service';
+import { getPlaceDetails } from '@/services/nominatim.service';
 import { enqueueScanJobs } from '@/lib/queue';
 import { cache } from '@/lib/redis';
 import { generateSessionId } from '@/lib/utils';
@@ -32,7 +32,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Get place details
-    const placeDetails = await getPlaceDetails(place_id);
+    // Extract lat/lon from place_id (format: osm_XXXXX)
+    // For now, we'll need to get this from the search results
+    // This is a simplified version - in production, you'd store lat/lon from search
+    const placeDetails = await getPlaceDetails(place_id, '0', '0');
 
     if (!placeDetails) {
       return NextResponse.json({ error: 'Place not found' }, { status: 404 });
