@@ -11,31 +11,32 @@ const RATE_LIMIT_PER_HOUR = parseInt(process.env.RATE_LIMIT_SCANS_PER_HOUR || '5
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { place_id } = body;
+    const { place_id, lat, lon } = body;
 
-    if (!place_id) {
-      return NextResponse.json({ error: 'place_id is required' }, { status: 400 });
+    if (!place_id || !lat || !lon) {
+      return NextResponse.json({ error: 'place_id, lat, and lon are required' }, { status: 400 });
     }
 
     // Get IP for rate limiting
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
 
-    // Check rate limit
-    const rateLimitKey = `rate_limit:ip:${ip}`;
-    const currentCount = await cache.increment(rateLimitKey, 3600); // 1 hour TTL
+    // Check rate limit (with error handling for Redis)
+    try {
+      const rateLimitKey = `rate_limit:ip:${ip}`;
+      const currentCount = await cache.increment(rateLimitKey, 3600); // 1 hour TTL
 
-    if (currentCount > RATE_LIMIT_PER_HOUR) {
-      return NextResponse.json(
-        { error: 'Too many scans. Please try again in an hour.' },
-        { status: 429 }
-      );
+      if (currentCount > RATE_LIMIT_PER_HOUR) {
+        return NextResponse.json(
+          { error: 'Too many scans. Please try again in an hour.' },
+          { status: 429 }
+        );
+      }
+    } catch (rateLimitError) {
+      console.warn('Rate limit check failed, continuing:', rateLimitError);
     }
 
-    // Get place details
-    // Extract lat/lon from place_id (format: osm_XXXXX)
-    // For now, we'll need to get this from the search results
-    // This is a simplified version - in production, you'd store lat/lon from search
-    const placeDetails = await getPlaceDetails(place_id, '0', '0');
+    // Get place details with actual coordinates from search
+    const placeDetails = await getPlaceDetails(place_id, lat, lon);
 
     if (!placeDetails) {
       return NextResponse.json({ error: 'Place not found' }, { status: 404 });

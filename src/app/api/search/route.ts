@@ -10,7 +10,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Query too short' }, { status: 400 });
     }
 
-    const places = await searchPlaces(query + ' convenience store');
+    // Search with the query as-is (user might already include location)
+    const places = await searchPlaces(query);
 
     // Transform to match expected format
     const results = places.map((p) => ({
@@ -18,7 +19,11 @@ export async function POST(request: NextRequest) {
       name: p.name,
       address: p.display_name,
       types: ['convenience_store'],
+      lat: p.lat,
+      lon: p.lon,
     }));
+
+    console.log(`Search for "${query}" returned ${results.length} results`);
 
     return NextResponse.json({ results });
   } catch (error: any) {

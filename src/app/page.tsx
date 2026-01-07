@@ -49,7 +49,11 @@ export default function HomePage() {
       const response = await fetch('/api/scans', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ place_id: selectedPlace.place_id }),
+        body: JSON.stringify({
+          place_id: selectedPlace.place_id,
+          lat: selectedPlace.lat,
+          lon: selectedPlace.lon,
+        }),
       });
 
       const data = await response.json();

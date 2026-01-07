@@ -51,17 +51,15 @@ export async function searchPlaces(query: string): Promise<NominatimPlace[]> {
       },
     });
 
-    const places = response.data
-      .filter((p: any) => p.type === 'shop' || p.type === 'fuel' || p.type === 'convenience')
-      .map((p: any) => ({
-        place_id: `osm_${p.place_id}`,
-        name: p.display_name.split(',')[0],
-        display_name: p.display_name,
-        lat: p.lat,
-        lon: p.lon,
-        type: p.type,
-        address: p.address,
-      }));
+    const places = response.data.map((p: any) => ({
+      place_id: `osm_${p.place_id}`,
+      name: p.display_name.split(',')[0],
+      display_name: p.display_name,
+      lat: p.lat,
+      lon: p.lon,
+      type: p.type || 'unknown',
+      address: p.address,
+    }));
 
     // Try to cache for 24 hours (but don't fail if Redis is down)
     try {
